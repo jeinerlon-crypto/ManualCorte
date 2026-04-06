@@ -1,1 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Producción Camacho</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1 { text-align: center; color: #2c3e50; }
+        label { font-weight: bold; display: block; margin-top: 15px; }
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2ecc71;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            border: none;
+        }
+        button:hover { background-color: #27ae60; }
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-left: 5px solid #3498db;
+            display: none;
+            line-height: 1.6;
+        }
+        .alerta { color: #c0392b; font-weight: bold; }
+        .oculto { display: none; }
+        .caja-opcion {
+            background-color: #ffffff;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
 
+<div class="container">
+    <h1>✂️ Instructor de Corte</h1>
+    
+    <label for="producto">Selecciona el Producto:</label>
+    <select id="producto" onchange="actualizarInterfaz()">
+        <optgroup label="Protectores Banda Acolchada">
+            <option value="protectores">Protectores de Colchón Estándar</option>
+            <option value="protectores_sobre_medida">Protectores Sobre Medida</option>
+        </optgroup>
+        <optgroup label="Protectores Banda Lisa">
+            <option value="banda_lisa_estandar">Banda Lisa Estándar</option>
+            <option value="banda_lisa_sobre_medida">Banda Lisa Sobre Medida</option>
+        </optgroup>
+        <optgroup label="Estuches">
+            <option value="estuches">Estuches Estándar</option>
+            <option value="estuches_sobre_medida">Estuches Sobre Medida</option>
+        </optgroup>
+        <optgroup label="Otros">
+            <option value="sabanas">Sábanas Ajustables</option>
+            <option value="fundas_sabanas">Fundas para Sábanas</option>
+            <option value="fundas_normales">Fundas Normales</option>
+        </optgroup>
+    </select>
+
+    <div id="seccionMedida">
+        <label for="medida">Selecciona la Medida:</label>
+        <select id="medida">
+            <option value="100">100 cm (Metro)</option>
+            <option value="120">120 cm</option>
+            <option value="140">140 cm</option>
+            <option value="160">160 cm</option>
+            <option value="200">2x2 mts (King)</option>
+        </select>
+    </div>
+
+    <div id="seccionEstucheSobreMedida" class="oculto">
+        <label for="anchoEstuche">Digita el ancho solicitado en cm:</label>
+        <input type="number" id="anchoEstuche" placeholder="Ejemplo: 160">
+
+        <label for="largoEstuche">Digita el largo solicitado en cm:</label>
+        <input type="number" id="largoEstuche" placeholder="Ejemplo: 190">
+
+        <label for="alturaEstuche">Digita la altura solicitada en cm:</label>
+        <input type="number" id="alturaEstuche" placeholder="Ejemplo: 40">
+
+        <label for="tipoTela">Tipo de Tela:</label>
+        <select id="tipoTela">
+            <option value="estandar">Tela Estándar (Aproximadamente 2.45m)</option>
+            <option value="especial">Terry Económico o Antifluido (Aprox 2.12m - 2.14m)</option>
+        </select>
+    </div>
+
+    <div id="seccionProtectorSobreMedida" class="oculto">
+        <label for="anchoColchon">Digita el ancho del colchón en cm:</label>
+        <input type="number" id="anchoColchon" placeholder="Ejemplo: 160">
+
+        <label for="largoColchon">Digita el largo del colchón en cm:</label>
+        <input type="number" id="largoColchon" placeholder="Ejemplo: 190">
+
+        <label for="alturaColchon">Digita la altura del colchón en cm:</label>
+        <input type="number" id="alturaColchon" placeholder="Ejemplo: 33">
+    </div>
+
+    <button onclick="calcularInstrucciones()">Generar Plan de Corte</button>
+    <div id="resultado"></div>
+</div>
+
+<script>
+    function actualizarInterfaz() {
+        let producto = document.getElementById("producto").value;
+        
+        document.getElementById("seccionMedida").classList.add("oculto");
+        document.getElementById("seccionEstucheSobreMedida").classList.add("oculto");
+        document.getElementById("seccionProtectorSobreMedida").classList.add("oculto");
+
+        if (producto === "protectores" || producto === "sabanas" || producto === "estuches" || producto === "banda_lisa_estandar") {
+            document.getElementById("seccionMedida").classList.remove("oculto");
+        } else if (producto === "estuches_sobre_medida") {
+            document.getElementById("seccionEstucheSobreMedida").classList.remove("oculto");
+        } else if (producto === "protectores_sobre_medida" || producto === "banda_lisa_sobre_medida") {
+            document.getElementById("seccionProtectorSobreMedida").classList.remove("oculto");
+        }
+    }
+
+    function calcularInstrucciones() {
+        let producto = document.getElementById("producto").value;
+        let medida = document.getElementById("medida").value;
+        let resultadoDiv = document.getElementById("resultado");
+        let html = "";
+
+        resultadoDiv.style.display = "block";
+
+        // MÓDULOS DE USO GENERAL
+        if (producto === "protectores" || producto === "sabanas") {
+            let cuadro = (producto === "protectores") ? 28 : 30;
+            if (medida === "200") {
+                html = `<h3>Instrucciones King 2x2 (${producto})</h3>1. Corta un tramo principal de 2.60 m.<br>2. Añade tira de 17 cm.<br>3. Cuadros de <b>${cuadro} cm</b>.`;
+            } else {
+                let cortes = { "100": 1.6, "120": 1.8, "140": 2.0, "160": 2.2 };
+                html = `<h3>Instrucciones Medida ${medida} cm (${producto})</h3>1. Corta un tramo de <b>${cortes[medida]} metros</b>.<br>2. Marca y corta cuadros de <b>${cuadro} cm</b>.`;
+            }
+        }
+        else if (producto === "fundas_sabanas") {
+            html = `<h3>Instrucciones Fundas para Sábanas</h3>1. Corta un tramo de 1.56 metros. Ancho dividido en 4 de 53 cm.`;
+        }
+        else if (producto === "fundas_normales") {
+            html = `<h3>Instrucciones Fundas Normales</h3>1. Corta un tramo de 1.40 metros. Ancho dividido en 4 de 53 cm.`;
+        }
+        else if (producto === "estuches") {
+            if (medida === "200") {
+                html = `<h3>Instrucciones Estuche King (2x2 mts)</h3><b>A) Tapas y Cierres:</b> 2 cortes de 2.03 m. Usa 2.03 m para tapa y saca tiras de 27 cm.<br><b>B) Excepción King:</b> Corta una TERCERA tira de 27 cm.<br><b>C) Respiradero:</b> Corte aparte de 2.03 m para tiras de 30 cm.`;
+            } else {
+                let base = parseInt(medida);
+                let corteTapas = (base + 3) * 2;
+                html = `<h3>Instrucciones Estuche de ${medida} cm</h3><b>A) Para las Tapas:</b> Corta un tramo de <b>${corteTapas / 100} m</b>. Saca las DOS tiras de 27 cm y divide a la mitad.<br><b>B) Para el Respiradero:</b> Paño aparte de 1.93 m para tiras de 30 cm.`;
+            }
+        }
+        
+        else if (producto === "estuches_sobre_medida") {
+            let ancho = parseInt(document.getElementById("anchoEstuche").value);
+            let largo = parseInt(document.getElementById("largoEstuche").value);
+            let altura = parseInt(document.getElementById("alturaEstuche").value);
+            let tela = document.getElementById("tipoTela").value;
+            
+            if (isNaN(ancho) || isNaN(largo) || isNaN(altura) || ancho <= 0 || largo <= 0 || altura <= 0) {
+                html = `<span class="alerta">Por favor, completa todos los campos con medidas válidas.</span>`;
+            } else {
+                let respiradero = (tela === "especial") ? altura + 2 : altura + 3;
+                let cierre = (tela === "especial") ? altura - 1 : altura + 1;
+                html = `<h3>Plan de Corte: Estuche Sobre Medida (${ancho}x${largo} cm)</h3>Para una altura de <b>${altura} cm</b>:<br>-> Medida del Respiradero: <b>${respiradero} cm</b>.<br>-> Medida de las dos tiras de cierre: <b>${cierre} cm</b>.<br><br>`;
+                
+                if (tela === "especial") {
+                    html += `<div style="padding:10px; background-color:#fff3cd; border-left:5px solid #ffc107;">⚠️ <b>Nota (Terry/Antifluido):</b><br>- Si es una sola unidad: Saca los respiraderos y cierres por tiras sueltas.<br>- Si es producción masiva: Traza en cantidades grandes.</div>`;
+                } else {
+                    html += `<b>Logística de Corte:</b><br>1. El sobrante a lo ancho del rollo solo da para UNA tira de ${cierre} cm.<br>2. La otra tira de ${cierre} cm y el respiradero de ${respiradero} cm se cortan de lo que queda del rollo.`;
+                }
+            }
+        }
+
+        // PROTECTORES SOBRE MEDIDA (BANDA ACOLCHADA)
+        else if (producto === "protectores_sobre_medida") {
+            let ancho = parseInt(document.getElementById("anchoColchon").value);
+            let largo = parseInt(document.getElementById("largoColchon").value);
+            let alturaOriginal = parseInt(document.getElementById("alturaColchon").value);
+
+            if (isNaN(ancho) || isNaN(largo) || isNaN(alturaOriginal) || ancho <= 0 || largo <= 0 || alturaOriginal <= 0) {
+                html = `<span class="alerta">Por favor, completa todos los campos.</span>`;
+            } else {
+                let cuadro = alturaOriginal + 5; 
+                let dimAncho = ancho + (cuadro * 2) + 3; 
+                let dimLargo = largo + (cuadro * 2) + 3;  
+                
+                html = `<h3>Plan de Corte: Banda Acolchada Sobre Medida</h3>Tamaño de los cuadros: <b>${cuadro} cm</b>.<br><br>`;
+
+                // OPCIÓN A: TRADICIONAL
+                let corteRolloA = dimAncho; 
+                let tiraFaltanteA = 0;
+                if (dimLargo > 245) { tiraFaltanteA = (dimLargo - 245) + 3; }
+                let consumoTotalA = corteRolloA + tiraFaltanteA;
+
+                html += `<div class="caja-opcion"><b>Opción A: Corte Tradicional</b><br>- Cortas del rollo el ancho total: <b>${corteRolloA / 100} m</b>.<br>`;
+                
+                if (tiraFaltanteA > 0) {
+                    if (cuadro >= tiraFaltanteA) {
+                        let mitadTira = Math.round(tiraFaltanteA / 2);
+                        html += `- <span class="alerta">⚠️ Alerta de Calidad:</span> El cuadro (${cuadro} cm) es mayor o igual a la tira (${tiraFaltanteA} cm). La costura quedaría visible arriba.<br>
+                                 - <b>Solución:</b> Parte la tira de ${tiraFaltanteA} cm en dos tiras de <b>${mitadTira} cm</b> y pega una a cada lado de la pieza principal. Así la costura queda oculta en los laterales.<br>`;
+                    } else {
+                        html += `- Requiere costura de empate. Tira de: <b>${tiraFaltanteA} cm</b>.<br>`;
+                    }
+                } else {
+                    html += `- No requiere costura de empate.<br>`;
+                }
+                
+                html += `- Consumo real total de tela: <b>${consumoTotalA / 100} m</b>.</div><br>`;
+
+                // OPCIÓN B: INVERTIDA
+                let corteRolloB = 0;
+                let tiraFaltanteB = 0;
+                if (dimAncho <= 245) { corteRolloB = dimLargo; } else { corteRolloB = dimAncho; tiraFaltanteB = (dimLargo - 245) + 3; }
+                let consumoTotalB = corteRolloB + tiraFaltanteB;
+
+                html += `<div class="caja-opcion"><b>Opción B: Corte Invertido (Girando la pieza)</b><br>- Cortas del rollo el largo total: <b>${corteRolloB / 100} m</b>.<br>`;
+                
+                if (tiraFaltanteB > 0) {
+                    if (cuadro >= tiraFaltanteB) {
+                        let mitadTiraB = Math.round(tiraFaltanteB / 2);
+                        html += `- <span class="alerta">⚠️ Alerta de Calidad:</span> Al girar la pieza el cuadro (${cuadro} cm) sigue siendo mayor o igual a la tira (${tiraFaltanteB} cm).<br>
+                                 - <b>Solución:</b> Parte la tira de ${tiraFaltanteB} cm en dos de <b>${mitadTiraB} cm</b> y pega una a cada lado para ocultar la costura.<br>`;
+                    } else {
+                        html += `- Al girar la pieza aún requiere empate de: <b>${tiraFaltanteB} cm</b>.<br>`;
+                    }
+                } else {
+                    html += `- No requiere costura de empate.<br>`;
+                }
+                
+                html += `- Consumo real total de tela: <b>${consumoTotalB / 100} m</b>.</div>`;
+            }
+        }
+
+        // BANDA LISA ESTÁNDAR
+        else if (producto === "banda_lisa_estandar") {
+            html = `<h3>Corte: Protector Banda Lisa Estándar (${medida} cm)</h3>`;
+            if (medida === "100") {
+                html += `1. Corta tramo de 1.93 m (Emparejado con uno de 140 para dar 2.45 m). Divide a 103 cm. Banda de 30 cm.`;
+            } else if (medida === "120") {
+                html += `1. Corta tramo de 1.93 m. Divide en partes iguales: 123 cm y 123 cm. ¡Salen 2 por paño! Banda de 30 cm.`;
+            } else if (medida === "140") {
+                html += `<b>Opción 1:</b> Tramo de 1.93 m (Emparejado con uno de 100) y divide a 143 cm.<br><b>Opción 2:</b> Tramo de 1.43 m. Usa 1.93 m de ancho y el sobrante (52 cm) se vuelve funda.`;
+            } else if (medida === "160") {
+                html += `1. Tramo de 1.93 m. Sobrante a lo ancho (50-53 cm) para fundas. Banda de 30 cm.`;
+            } else if (medida === "200") {
+                html += `1. Tramo de 2.03 m. Sobrante a lo ancho para cierres. Banda de 30 cm.`;
+            }
+        }
+
+        // BANDA LISA SOBRE MEDIDA (AHORA CON MARGEN DE CONFECCIÓN)
+        else if (producto === "banda_lisa_sobre_medida") {
+            let ancho = parseInt(document.getElementById("anchoColchon").value);
+            let largo = parseInt(document.getElementById("largoColchon").value);
+            let altura = parseInt(document.getElementById("alturaColchon").value);
+
+            if (isNaN(ancho) || isNaN(largo) || isNaN(altura) || ancho <= 0 || largo <= 0 || altura <= 0) {
+                html = `<span class="alerta">Completa todos los campos.</span>`;
+            } else {
+                let anchoCorte = ancho + 3;
+                let largoCorte = largo + 3;
+                let anchoTiraBanda = altura + 5;
+                let largoTiraBanda = (ancho === 200 || largo === 200) ? 8 : 7;
+                
+                html = `<h3>Plan: Banda Lisa Sobre Medida</h3>
+                        Para colchón de ${ancho}x${largo} cm:<br><br>
+                        <b>Tapa:</b><br>
+                        - Cortar un tramo de tela de <b>${anchoCorte} cm</b> por <b>${largoCorte} cm</b> (ya incluye los 3 cm de confección).<br><br>
+                        <b>Banda:</b><br>
+                        - Tira de <b>${anchoTiraBanda} cm</b> de ancho por <b>${largoTiraBanda} metros</b> de largo.`;
+            }
+        }
+
+        resultadoDiv.innerHTML = html;
+    }
+    
+    actualizarInterfaz();
+</script>
+
+</body>
+</html>
