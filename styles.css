@@ -1,8 +1,21 @@
-body {
-    background-color: #FFFFFF;
+.primary {
+    background-color: #0052CC;
+    color: #FFFFFF;
+}
+
+.secondary {
+    background-color: #DC3545;
+    color: #FFFFFF;
+}
+
+.text-primary {
     color: #0052CC;
 }
 
-h1, h2, h3, h4, h5, h6 {
+.text-secondary {
     color: #DC3545;
+}
+
+.bg-white {
+    background-color: #FFFFFF;
 }
