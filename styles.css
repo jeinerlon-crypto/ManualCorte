@@ -1,21 +1,403 @@
+/* ========== VARIABLES Y COLORES CORPORATIVOS ========== */
+:root {
+    --azul-primario: #003D7A;
+    --azul-claro: #0052CC;
+    --azul-oscuro: #001F47;
+    --blanco: #FFFFFF;
+    --rojo-acento: #DC3545;
+    --gris-claro: #F8F9FA;
+    --gris-oscuro: #343A40;
+    --sombra: 0 2px 8px rgba(0, 61, 122, 0.15);
+    --transicion: all 0.3s ease;
+}
+
+/* ========== RESET Y ESTILOS GLOBALES ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--azul-primario) 0%, var(--azul-claro) 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: var(--gris-oscuro);
+}
+
+/* ========== CONTENEDOR PRINCIPAL ========== */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--blanco);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    animation: slideIn 0.6s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== ENCABEZADOR ========== */
+h1 {
+    color: var(--azul-primario);
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ========== ETIQUETAS ========== */
+label {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    color: var(--azul-primario);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+label:first-child {
+    margin-top: 0;
+}
+
+/* ========== SELECTORES E INPUTS ========== */
+select,
+input[type="number"],
+input[type="text"] {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 2px solid var(--azul-claro);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: var(--transicion);
+    background-color: var(--gris-claro);
+}
+
+select:focus,
+input[type="number"]:focus,
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--rojo-acento);
+    background-color: var(--blanco);
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+}
+
+select:hover,
+input[type="number"]:hover,
+input[type="text"]:hover {
+    border-color: var(--azul-primario);
+}
+
+/* ========== OPCIONES DE SELECT ========== */
+optgroup {
+    font-weight: bold;
+    color: var(--azul-primario);
+}
+
+option {
+    background-color: var(--gris-claro);
+    color: var(--gris-oscuro);
+    padding: 10px;
+}
+
+/* ========== SECCIONES OCULTAS ========== */
+.oculto {
+    display: none !important;
+}
+
+#seccionMedida,
+#seccionEstucheSobreMedida,
+#seccionProtectorSobreMedida {
+    animation: slideDown 0.4s ease-out;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: var(--gris-claro);
+    border-left: 4px solid var(--azul-claro);
+    border-radius: 8px;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+    }
+}
+
+/* ========== BOTONES ========== */
+button {
+    width: 100%;
+    padding: 14px 24px;
+    margin-top: 25px;
+    background: linear-gradient(135deg, var(--azul-primario) 0%, var(--azul-claro) 100%);
+    color: var(--blanco);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transicion);
+    box-shadow: var(--sombra);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Efecto de onda en botón */
+button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 61, 122, 0.3);
+    background: linear-gradient(135deg, var(--azul-claro) 0%, var(--rojo-acento) 100%);
+}
+
+button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 61, 122, 0.2);
+}
+
+/* ========== RESULTADO ========== */
+#resultado {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: var(--gris-claro);
+    border-radius: 8px;
+    border-left: 5px solid var(--rojo-acento);
+    animation: fadeIn 0.6s ease-out;
+    min-height: auto;
+}
+
+#resultado h2 {
+    color: var(--azul-primario);
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+#resultado p,
+#resultado li {
+    color: var(--gris-oscuro);
+    line-height: 1.8;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+#resultado ul,
+#resultado ol {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+#resultado li:before {
+    content: '';
+}
+
+/* ========== CLASES DE UTILIDAD ========== */
 .primary {
-    background-color: #0052CC;
-    color: #FFFFFF;
+    background-color: var(--azul-primario);
+    color: var(--blanco);
 }
 
 .secondary {
-    background-color: #DC3545;
-    color: #FFFFFF;
+    background-color: var(--rojo-acento);
+    color: var(--blanco);
 }
 
 .text-primary {
-    color: #0052CC;
+    color: var(--azul-primario);
 }
 
 .text-secondary {
-    color: #DC3545;
+    color: var(--rojo-acento);
 }
 
 .bg-white {
-    background-color: #FFFFFF;
+    background-color: var(--blanco);
+}
+
+/* ========== RESPONSIVIDAD - TABLETS (768px) ========== */
+@media (max-width: 768px) {
+    .container {
+        padding: 25px;
+    }
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 25px;
+    }
+
+    label {
+        margin-top: 15px;
+        font-size: 0.9rem;
+    }
+
+    select,
+    input[type="number"],
+    input[type="text"] {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+
+    button {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+        margin-top: 20px;
+    }
+
+    #seccionMedida,
+    #seccionEstucheSobreMedida,
+    #seccionProtectorSobreMedida {
+        padding: 15px;
+        margin: 15px 0;
+    }
+
+    #resultado {
+        padding: 15px;
+        margin-top: 20px;
+    }
+
+    #resultado h2 {
+        font-size: 1.3rem;
+    }
+
+    #resultado p,
+    #resultado li {
+        font-size: 0.9rem;
+    }
+}
+
+/* ========== RESPONSIVIDAD - MÓVILES (480px) ========== */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    label {
+        margin-top: 12px;
+        font-size: 0.85rem;
+    }
+
+    select,
+    input[type="number"],
+    input[type="text"] {
+        padding: 10px;
+        font-size: 1rem; /* Evita zoom en iOS */
+        margin-bottom: 12px;
+    }
+
+    button {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        margin-top: 15px;
+        letter-spacing: 0.5px;
+    }
+
+    button::before {
+        width: 200px;
+        height: 200px;
+    }
+
+    button:hover::before {
+        width: 400px;
+        height: 400px;
+    }
+
+    #seccionMedida,
+    #seccionEstucheSobreMedida,
+    #seccionProtectorSobreMedida {
+        padding: 12px;
+        margin: 10px 0;
+    }
+
+    #resultado {
+        padding: 12px;
+        margin-top: 15px;
+    }
+
+    #resultado h2 {
+        font-size: 1.1rem;
+    }
+
+    #resultado p,
+    #resultado li {
+        font-size: 0.85rem;
+    }
+}
+
+/* ========== RESPONSIVIDAD - MÓVILES MUY PEQUEÑOS (320px) ========== */
+@media (max-width: 320px) {
+    body {
+        padding: 5px;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.2rem;
+    }
+
+    button {
+        font-size: 0.75rem;
+        padding: 8px 12px;
+    }
 }
